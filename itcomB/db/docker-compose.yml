@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: djDB
+      POSTGRES_USER: devjain
+      POSTGRES_PASSWORD: devjain
+    
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  backend:
+    build:
+      context: ..  # Set to the root directory (itcomB)
+      dockerfile: db/Dockerfile
+    restart: always
+    ports:
+      - 5000:5000
+    environment:
+      PORT: 5000
+      DB_HOST: db
+      DB_USER: devjain
+      DB_PASSWORD: devjain
+      DB_NAME: djDB
+    depends_on:
+      - db
